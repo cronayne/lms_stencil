@@ -10,20 +10,27 @@ import '@stencil/core';
 import '@stencil/router';
 import '@stencil/state-tunnel';
 import {
-  MatchResults,
+  RouterHistory,
 } from '@stencil/router';
 
 
 export namespace Components {
 
+  interface AppAuth {
+    'history': RouterHistory;
+  }
+  interface AppAuthAttributes extends StencilHTMLAttributes {
+    'history'?: RouterHistory;
+  }
+
   interface AppHome {}
   interface AppHomeAttributes extends StencilHTMLAttributes {}
 
   interface AppProfile {
-    'match': MatchResults;
+    'history': RouterHistory;
   }
   interface AppProfileAttributes extends StencilHTMLAttributes {
-    'match'?: MatchResults;
+    'history'?: RouterHistory;
   }
 
   interface AppRoot {}
@@ -32,17 +39,25 @@ export namespace Components {
 
 declare global {
   interface StencilElementInterfaces {
+    'AppAuth': Components.AppAuth;
     'AppHome': Components.AppHome;
     'AppProfile': Components.AppProfile;
     'AppRoot': Components.AppRoot;
   }
 
   interface StencilIntrinsicElements {
+    'app-auth': Components.AppAuthAttributes;
     'app-home': Components.AppHomeAttributes;
     'app-profile': Components.AppProfileAttributes;
     'app-root': Components.AppRootAttributes;
   }
 
+
+  interface HTMLAppAuthElement extends Components.AppAuth, HTMLStencilElement {}
+  var HTMLAppAuthElement: {
+    prototype: HTMLAppAuthElement;
+    new (): HTMLAppAuthElement;
+  };
 
   interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {}
   var HTMLAppHomeElement: {
@@ -63,12 +78,14 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
+    'app-auth': HTMLAppAuthElement
     'app-home': HTMLAppHomeElement
     'app-profile': HTMLAppProfileElement
     'app-root': HTMLAppRootElement
   }
 
   interface ElementTagNameMap {
+    'app-auth': HTMLAppAuthElement;
     'app-home': HTMLAppHomeElement;
     'app-profile': HTMLAppProfileElement;
     'app-root': HTMLAppRootElement;

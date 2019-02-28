@@ -1,3 +1,7 @@
 .app-profile {
   padding: 10px;
 }
+
+.app-profile ul li span {
+  font-weight: bold;
+}

@@ -1,5 +1,5 @@
-import { Component, Prop } from '@stencil/core';
-import { MatchResults } from '@stencil/router';
+import { Component, Prop, State } from '@stencil/core';
+import { RouterHistory } from '@stencil/router';
 
 @Component({
   tag: 'app-profile',
@@ -7,7 +7,9 @@ import { MatchResults } from '@stencil/router';
   shadow: true
 })
 export class AppProfile {
-  @Prop() match: MatchResults;
+  @Prop() history: RouterHistory;
+  @State() user: AppUser;
+  @Prop({ context: 'isServer' }) private isServer: boolean;
 
   normalize(name: string): string {
     if (name) {
@@ -17,15 +19,35 @@ export class AppProfile {
   }
 
   render() {
-    if (this.match && this.match.params.name) {
-      return (
-        <div class="app-profile">
-          <p>
-            Hello! My name is {this.normalize(this.match.params.name)}. My name was passed in
-            through a route param!
-          </p>
-        </div>
-      );
+    if (this.user) {
+    let keys = Object.keys(this.user);
+    return <div class="app-profile">
+        <h2>User Claims</h2>
+        <ul>
+          {keys.map(key => <li><span>{key}</span>: {this.user[key]}</li>)}
+        </ul>
+        <button onClick={this.logout}>
+          Logout
+        </button>
+      </div>;
+    }
+  }
+
+  componentWillLoad() {
+    if (!this.isServer) {
+      let token = JSON.parse(localStorage.getItem('okta_id_token'));
+      if (token) {
+        this.user = token.claims;
+      } else {
+        this.history.push('/login', {});
+      }
+    }
+  }
+
+  logout() {
+    if (!this.isServer) {
+      localStorage.removeItem('okta_id_token');
+      location.reload();
     }
   }
 }
